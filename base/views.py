@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from .forms import RoomForm
 
 # Create your views here.
@@ -104,8 +104,18 @@ def home(request):
 def room(request, pk):
 
     room = Room.objects.get(id=pk)
+    # message_set.all() finds all the children of the parent i.e. all the messages for a room.
+    room_messages = room.message_set.all().order_by('-created')
 
-    context = {'room': room}
+    if request.method == "POST":
+        message = Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
+        )
+        return redirect('room', pk=room.id)
+
+    context = {'room': room, 'room_messages': room_messages}
 
     template = 'base/room.html'
 
