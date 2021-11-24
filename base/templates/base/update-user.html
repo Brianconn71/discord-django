@@ -21,10 +21,15 @@
         <form class="form" action="" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
 
+          <!-- <div class="form__group">
+            <label for="profile_pic">Avatar</label>
+            <input type="file" id="profile_pic" name="profile_pic">
+          </div> -->
+
           {% for field in form %}
           <div class="form__group">
-            <label for="profile_pic">{{field.label}}</label>
-            {{field}}
+            <label for="profile_pic">{{ field.label }}</label>
+            {{ field }}
           </div>
           {% endfor %}
 
@@ -39,4 +44,4 @@
   </div>
   </div>
 </main>
-{% endblock content %}
+{% endblock %}
