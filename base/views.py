@@ -143,12 +143,17 @@ def createRoom(request):
     form = RoomForm()
     topics = Topic.objects.all()
     if request.method == "POST":
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room = form.save(commit=False)
-            room.host = request.user
-            room.save()
-            return redirect('home')
+        topic_name = request.POST.get('topic')
+        # adding a way to create a new topic in form
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+        
+        Room.objects.create(
+            host = request.user,
+            topic = topic,
+            name = request.POST.get('name'),
+            description = request.POST.get('description'),
+        )
+        return redirect('home')
 
     context = {'form': form,
                'topics': topics}
@@ -168,13 +173,20 @@ def updateRoom(request, pk):
         return HttpResponse('You are not allowed here.')
 
     if request.method == "POST":
+        topic_name = request.POST.get('topic')
+        # adding a way to create a new topic in form
+        topic, created = Topic.objects.get_or_create(name=topic_name)
         form = RoomForm(request.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+        room.name = request.POST.get('name')
+        room.topic = topic
+        room.description = request.POST.get('description')
+        room.save()
+        
+        return redirect('home')
 
     context = {'form': form,
-               'topics': topics}
+               'topics': topics,
+               'room': room}
 
     template = 'base/room_form.html'
 
@@ -211,3 +223,11 @@ def deleteMessage(request, pk):
     template = 'base/delete.html'
     
     return render(request, template, {'obj': message})
+
+
+@login_required(login_url='login')
+def updateUser(request):
+    
+    template = 'base/update-user.html'
+    context = {}
+    return render(request, template, context)
