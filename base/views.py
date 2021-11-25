@@ -258,6 +258,7 @@ def activityPage(request):
     room_messages = Message.objects.all()
     template = 'base/activity.html'
     context = {
+        'room_messages': room_messages,
         
     }
     return render(request, template, context)
