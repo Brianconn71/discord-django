@@ -1,7 +1,6 @@
 from django.forms import ModelForm
 from django.forms.models import model_to_dict
-from .models import Room
-from django.contrib.auth.models import User
+from .models import Room, User
 
 
 class RoomForm(ModelForm):
